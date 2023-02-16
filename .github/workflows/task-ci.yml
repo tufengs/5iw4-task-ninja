@@ -30,6 +30,9 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+        ports:
+          - 5432:5432
+
     steps:
       - uses: actions/checkout@v3
 
@@ -43,7 +46,7 @@ jobs:
       - name: migrate database
         run: pnpm run prisma migrate dev
         env:
-          DATABASE_URL: postgresql://usser:5iw4@postgres:5432/task?schema=public
+          DATABASE_URL: postgresql://usser:5iw4@localhost:5432/test?schema=public
 
       - name: test E2E
         run: pnpm run test:e2e

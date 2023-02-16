@@ -43,7 +43,7 @@ jobs:
       - name: migrate database
         run: pnpm run prisma migrate dev
         env:
-          DATABASE_URL: postgresql://usser:5iw4@localhost:5432/task?schema=public
+          DATABASE_URL: postgresql://usser:5iw4@postgres:5432/task?schema=public
 
       - name: test E2E
         run: pnpm run test:e2e

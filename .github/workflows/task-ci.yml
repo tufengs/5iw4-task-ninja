@@ -1,0 +1,50 @@
+name: Task API CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: task
+
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: 5iw4
+          POSTGRES_USER: usser
+          POSTGRES_DB: test
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 6.0.2
+
+      - name: install dependencies
+        run: pnpm install
+
+      - name: migrate database
+        run: pnpm run prisma migrate dev
+        env:
+          DATABASE_URL: postgresql://usser:5iw4@localhost:5432/task?schema=public
+
+      - name: test E2E
+        run: pnpm run test:e2e
+
